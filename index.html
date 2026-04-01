@@ -5,913 +5,968 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Models — CFO Decision Cheat Sheet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,500;6..12,600;6..12,700;6..12,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
 <style>
 :root {
-  --bg: #0A0A0F;
-  --surface: #111118;
-  --surface2: #18181F;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.13);
-  --text: #F0EFE8;
-  --muted: #7A7A8C;
-  --accent: #C8F04A;
-  --accent2: #7B6EFF;
-  --accent3: #FF6B6B;
-  --accent4: #40E0C0;
-  --gold: #F5C842;
-  --font-display: 'Syne', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --radius: 12px;
-  --radius-sm: 8px;
+  --white: #ffffff;
+  --off-white: #f5f5f7;
+  --light-gray: #e8e8ed;
+  --mid-gray: #d2d2d7;
+  --text-dark: #1d1d1f;
+  --text-mid: #6e6e73;
+  --text-light: #a1a1a6;
+  --g-blue: #1a73e8;
+  --g-red: #ea4335;
+  --g-yellow: #fbbc04;
+  --g-green: #34a853;
+  --g-blue-bg: #e8f0fe;
+  --g-red-bg: #fce8e6;
+  --g-yellow-bg: #fef7e0;
+  --g-green-bg: #e6f4ea;
+  --purple: #7c4dff;
+  --purple-bg: #f3f0ff;
+  --r-lg: 18px;
+  --r-md: 12px;
+  --r-sm: 8px;
+  --font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-h: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { scroll-behavior: smooth; }
-
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 15px;
+  background: var(--white);
+  color: var(--text-dark);
+  font-family: var(--font);
+  font-size: 16px;
   line-height: 1.65;
-  min-height: 100vh;
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── noise texture overlay ─── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.4;
+/* ── STICKY NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
 }
 
-/* ─── grid background ─── */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-h);
+  font-size: 14px; font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: -0.01em;
+  text-decoration: none;
 }
 
-.page {
-  position: relative;
-  z-index: 1;
-  max-width: 1060px;
-  margin: 0 auto;
-  padding: 0 24px 80px;
-}
+.g-dots { display: flex; gap: 4px; }
+.g-dots i { width: 8px; height: 8px; border-radius: 50%; display: block; }
+.g-dots i:nth-child(1) { background: var(--g-blue); }
+.g-dots i:nth-child(2) { background: var(--g-red); }
+.g-dots i:nth-child(3) { background: var(--g-yellow); }
+.g-dots i:nth-child(4) { background: var(--g-green); }
 
-/* ─── HERO ─── */
-.hero {
-  padding: 72px 0 56px;
-  position: relative;
-}
-
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(200, 240, 74, 0.1);
-  border: 1px solid rgba(200, 240, 74, 0.25);
-  border-radius: 100px;
-  padding: 5px 14px;
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 24px;
-}
-
-.hero-eyebrow::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.7); }
-}
-
-h1 {
-  font-family: var(--font-display);
-  font-size: clamp(36px, 6vw, 64px);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  margin-bottom: 20px;
-}
-
-h1 .highlight {
-  color: var(--accent);
-  position: relative;
-}
-
-.hero-sub {
-  font-size: 17px;
-  color: var(--muted);
-  max-width: 560px;
-  line-height: 1.7;
-  font-weight: 300;
-}
-
-.hero-meta {
-  display: flex;
-  gap: 24px;
-  margin-top: 32px;
-  flex-wrap: wrap;
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 300;
-}
-
-.meta-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--muted);
-}
-
-/* ─── TABS ─── */
-.tabs {
-  display: flex;
-  gap: 4px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: calc(var(--radius) + 4px);
-  padding: 4px;
-  margin-bottom: 40px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  flex-wrap: nowrap;
-}
-
-.tabs::-webkit-scrollbar { display: none; }
-
-.tab-btn {
-  flex-shrink: 0;
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 9px 18px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.2s ease;
+.nav-links { display: flex; gap: 2px; }
+.nav-link {
+  background: none; border: none;
+  font-family: var(--font); font-size: 13px; font-weight: 400;
+  color: var(--text-mid);
+  padding: 7px 14px; border-radius: 100px;
+  cursor: pointer; transition: all .2s;
   white-space: nowrap;
 }
+.nav-link:hover { color: var(--text-dark); background: var(--off-white); }
+.nav-link.on { color: var(--text-dark); background: var(--off-white); font-weight: 600; }
 
-.tab-btn:hover { color: var(--text); }
-
-.tab-btn.active {
-  background: var(--surface2);
-  color: var(--text);
-  box-shadow: inset 0 0 0 1px var(--border2);
-}
-
-.tab-pane { display: none; animation: fadeIn 0.25s ease; }
-.tab-pane.active { display: block; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ─── SECTION LABEL ─── */
-.label {
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-/* ─── MODEL CARDS ─── */
-.model-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-  margin-bottom: 40px;
-}
-
-.model-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  transition: border-color 0.2s, transform 0.2s;
+/* ── HERO ── */
+.hero {
+  background: var(--off-white);
+  padding: 88px 24px 80px;
+  text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-.model-card::before {
+.hero::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
+  bottom: -120px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 300px;
+  background: radial-gradient(ellipse, rgba(26,115,232,.07), transparent 70%);
+  pointer-events: none;
 }
 
-.model-card.budget::before { background: var(--accent4); }
-.model-card.balanced::before { background: var(--accent2); }
-.model-card.premium::before { background: var(--gold); }
-.model-card.opensource::before { background: var(--accent3); }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 500;
+  color: var(--g-blue);
+  margin-bottom: 22px;
+}
+.hero-tag-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--g-blue); animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.4} }
 
-.model-card:hover {
-  border-color: var(--border2);
-  transform: translateY(-2px);
+h1 {
+  font-family: var(--font-h);
+  font-size: clamp(36px, 6vw, 68px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--text-dark);
+  margin-bottom: 22px;
+  max-width: 780px;
+  margin-left: auto; margin-right: auto;
+}
+.cb { color: var(--g-blue); }
+.cr { color: var(--g-red); }
+.cg { color: var(--g-green); }
+.cy { color: #e8a000; }
+
+.hero-p {
+  font-size: 18px; font-weight: 300;
+  color: var(--text-mid);
+  max-width: 520px;
+  margin: 0 auto 36px;
+  line-height: 1.65;
 }
 
-.tier-badge {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 3px 9px;
+.hero-stats {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 8px;
+}
+.stat-pill {
+  background: white; border: 1px solid var(--mid-gray);
   border-radius: 100px;
-  margin-bottom: 10px;
+  padding: 7px 16px;
+  font-size: 13px; font-weight: 500; color: var(--text-mid);
+  display: flex; align-items: center; gap: 7px;
 }
+.stat-pill-dot { width: 6px; height: 6px; border-radius: 50%; }
 
-.budget .tier-badge { background: rgba(64,224,192,0.12); color: var(--accent4); border: 1px solid rgba(64,224,192,0.2); }
-.balanced .tier-badge { background: rgba(123,110,255,0.12); color: var(--accent2); border: 1px solid rgba(123,110,255,0.2); }
-.premium .tier-badge { background: rgba(245,200,66,0.12); color: var(--gold); border: 1px solid rgba(245,200,66,0.2); }
-.opensource .tier-badge { background: rgba(255,107,107,0.12); color: var(--accent3); border: 1px solid rgba(255,107,107,0.2); }
+/* ── MAIN WRAPPER ── */
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
-.model-name {
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 2px;
+/* ── SECTIONS ── */
+.sec { display: none; }
+.sec.on { display: block; animation: pop .28s ease; }
+@keyframes pop { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── CONTENT BLOCKS ── */
+.blk {
+  padding: 72px 0;
+  border-bottom: 1px solid var(--light-gray);
 }
+.blk:last-child { border-bottom: none; }
 
-.model-maker { font-size: 12px; color: var(--muted); font-weight: 300; margin-bottom: 12px; }
-
-.model-price {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.model-price sup { font-size: 12px; font-weight: 500; color: var(--muted); }
-
-/* ─── VENDOR PROFILES ─── */
-.vendor-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-}
-
-.vendor-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-}
-
-.vendor-name {
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
+.blk-eyebrow {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-light);
   margin-bottom: 8px;
 }
 
-.vendor-desc {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.6;
-  font-weight: 300;
+.blk-h {
+  font-family: var(--font-h);
+  font-size: clamp(26px, 3.5vw, 44px);
+  font-weight: 700; letter-spacing: -0.02em;
+  line-height: 1.1; color: var(--text-dark);
+  margin-bottom: 14px;
 }
 
-/* ─── TOKEN EXPLAINER ─── */
-.flow-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
+.blk-p {
+  font-size: 17px; font-weight: 300;
+  color: var(--text-mid); line-height: 1.65;
+  max-width: 560px; margin-bottom: 44px;
 }
 
-.flow-box {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-sm);
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  font-family: var(--font-display);
+/* ── TIER CARDS ── */
+.tier-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
 }
+@media(max-width:860px){ .tier-row{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:500px){ .tier-row{grid-template-columns:1fr} }
 
-.flow-arrow {
-  color: var(--accent);
-  font-size: 16px;
-  font-weight: 700;
+.tc {
+  background: var(--off-white);
+  border-radius: var(--r-lg); padding: 28px 22px;
+  position: relative; overflow: hidden;
+  transition: transform .22s, box-shadow .22s;
 }
+.tc:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,.1); }
+.tc.dark { background: var(--text-dark); }
 
-.info-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-sm);
-  padding: 16px 20px;
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 24px;
+.tc-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+
+.badge {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 100px;
+  margin-bottom: 16px;
 }
+.b-blue  { background: var(--g-blue-bg); color: var(--g-blue); }
+.b-gold  { background: var(--g-yellow-bg); color: #c97c00; }
+.b-red   { background: var(--g-red-bg); color: var(--g-red); }
+.b-dark  { background: rgba(255,255,255,.14); color: rgba(255,255,255,.85); }
+.b-green { background: var(--g-green-bg); color: var(--g-green); }
+.b-purple{ background: var(--purple-bg); color: var(--purple); }
 
-.info-box strong { color: var(--text); font-weight: 500; }
+.tc-name {
+  font-family: var(--font-h);
+  font-size: 16px; font-weight: 700;
+  color: var(--text-dark); letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+.tc.dark .tc-name { color: white; }
 
-.io-grid {
+.tc-sub { font-size: 13px; font-weight: 300; color: var(--text-mid); margin-bottom: 18px; }
+.tc.dark .tc-sub { color: rgba(255,255,255,.55); }
+
+.tc-price {
+  font-family: var(--font-h);
+  font-size: 26px; font-weight: 700;
+  color: var(--text-dark); letter-spacing: -0.02em; line-height: 1;
+}
+.tc.dark .tc-price { color: white; }
+.tc-unit { font-size: 12px; font-weight: 400; color: var(--text-light); display: block; margin-top: 5px; }
+.tc.dark .tc-unit { color: rgba(255,255,255,.4); }
+
+/* ── VENDOR MOSAIC ── */
+.vendor-mosaic {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 2px;
+  background: var(--light-gray);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+@media(max-width:640px){ .vendor-mosaic{grid-template-columns:1fr} }
+
+.vc {
+  background: var(--white); padding: 32px 28px;
+  transition: background .2s;
+}
+.vc:hover { background: var(--off-white); }
+
+.vc-icon {
+  width: 38px; height: 38px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-h); font-size: 13px; font-weight: 800;
+  margin-bottom: 16px;
+}
+.ico-ai   { background: #000; color: #fff; }
+.ico-anth { background: #d4845a; color: #fff; }
+.ico-g    { background: var(--g-blue-bg); }
+.ico-ds   { background: var(--purple-bg); color: var(--purple); }
+
+.vc-name {
+  font-family: var(--font-h);
+  font-size: 17px; font-weight: 700;
+  color: var(--text-dark); letter-spacing: -0.01em;
+  margin-bottom: 9px;
+}
+.vc-desc {
+  font-size: 14px; font-weight: 300;
+  color: var(--text-mid); line-height: 1.65;
+}
+
+/* ── TOKEN FLOW BAR ── */
+.flow-bar {
+  display: flex; align-items: stretch;
+  background: var(--off-white);
+  border-radius: var(--r-lg);
+  overflow: hidden;
   margin-bottom: 28px;
 }
-
-.io-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
+.fb-step {
+  flex: 1; padding: 24px 16px;
+  text-align: center;
+  position: relative;
+  border-right: 1px solid var(--light-gray);
 }
+.fb-step:last-child { border-right: none; }
 
-.io-card-title {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 6px;
+.fb-icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: white; margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
 }
+.fb-title { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; }
+.fb-sub   { font-size: 11px; font-weight: 300; color: var(--text-light); }
 
-.io-card-body {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.6;
-  font-weight: 300;
+/* ── CALLOUT ── */
+.callout {
+  background: var(--g-blue-bg);
+  border-radius: var(--r-md); padding: 22px 24px;
+  display: flex; gap: 14px; align-items: flex-start;
+  margin-bottom: 28px;
 }
-
-/* ─── RULE LIST ─── */
-.rule-list { display: flex; flex-direction: column; gap: 10px; }
-
-.rule-item {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  transition: border-color 0.2s;
+.callout-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--g-blue); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0; margin-top: 2px;
 }
+.callout-body { font-size: 14px; color: #174ea6; line-height: 1.65; }
+.callout-body strong { font-weight: 600; }
 
-.rule-item:hover { border-color: var(--border2); }
+/* ── IO CARDS ── */
+.io-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px; }
+@media(max-width:540px){ .io-row{grid-template-columns:1fr} }
 
-.rule-num {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1px;
+.io-card { border-radius: var(--r-md); padding: 24px; }
+.io-in  { background: var(--g-green-bg); }
+.io-out { background: var(--g-red-bg); }
+
+.io-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 5px;
 }
+.io-in  .io-eyebrow { color: var(--g-green); }
+.io-out .io-eyebrow { color: var(--g-red); }
 
-.rule-text {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.65;
-  font-weight: 300;
+.io-title {
+  font-family: var(--font-h); font-size: 17px; font-weight: 700;
+  color: var(--text-dark); margin-bottom: 8px;
 }
+.io-body { font-size: 14px; font-weight: 300; color: var(--text-mid); line-height: 1.6; }
 
-.rule-text strong { color: var(--text); font-weight: 500; }
-
-/* ─── COST TABLE ─── */
-.table-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 24px;
+/* ── BENCH ROWS ── */
+.bench-list { display: flex; flex-direction: column; gap: 2px; }
+.bench-row {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--off-white); border-radius: var(--r-sm);
+  padding: 16px 20px; transition: background .2s;
 }
+.bench-row:hover { background: var(--light-gray); }
+.bench-emoji { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.bench-text { font-size: 14px; font-weight: 300; color: var(--text-mid); line-height: 1.6; }
+.bench-text strong { font-weight: 600; color: var(--text-dark); }
 
+/* ── TABLE ── */
+.tbl-wrap {
+  border-radius: var(--r-lg); overflow: hidden;
+  border: 1px solid var(--light-gray);
+  margin-bottom: 28px;
+}
 table { width: 100%; border-collapse: collapse; }
-
+thead { background: var(--off-white); }
 th {
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface2);
+  padding: 12px 18px;
+  font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text-light); text-align: left;
+  border-bottom: 1px solid var(--light-gray);
 }
-
 td {
-  padding: 13px 16px;
-  font-size: 13px;
-  color: var(--text);
-  border-bottom: 1px solid var(--border);
+  padding: 14px 18px;
+  font-size: 14px; color: var(--text-dark);
+  border-bottom: 1px solid var(--light-gray);
   vertical-align: middle;
 }
-
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(255,255,255,0.02); }
+tbody tr:hover td { background: var(--off-white); }
 
 .bar-wrap { display: flex; align-items: center; gap: 8px; }
-.bar-bg { flex: 1; height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; min-width: 60px; }
-.bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.bar-bg {
+  flex: 1; height: 5px; border-radius: 100px;
+  background: var(--light-gray); overflow: hidden; min-width: 70px;
+}
+.bar-fill { height: 100%; border-radius: 100px; }
 
-/* ─── USE CASE GRID ─── */
-.usecase-grid {
+/* ── SUBSCRIPTION CARDS ── */
+.sub-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px; margin-bottom: 24px;
 }
-
-.usecase-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  transition: border-color 0.2s, transform 0.2s;
+.sub-card {
+  background: var(--off-white); border-radius: var(--r-md);
+  padding: 22px 20px;
+  border: 2px solid transparent; transition: all .2s;
 }
-
-.usecase-card:hover {
-  border-color: var(--border2);
-  transform: translateY(-2px);
+.sub-card:hover { border-color: var(--g-blue); background: white; }
+.sub-plan {
+  font-family: var(--font-h); font-size: 15px; font-weight: 700;
+  color: var(--text-dark); margin-bottom: 2px;
 }
-
-.usecase-title {
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 6px;
+.sub-maker { font-size: 12px; font-weight: 300; color: var(--text-light); margin-bottom: 14px; }
+.sub-price {
+  font-family: var(--font-h); font-size: 28px; font-weight: 700;
+  color: var(--text-dark); letter-spacing: -0.02em; line-height: 1;
 }
+.sub-price span { font-size: 13px; font-weight: 400; color: var(--text-light); }
+.sub-note { font-size: 12px; font-weight: 300; color: var(--text-mid); margin-top: 8px; line-height: 1.5; }
 
-.usecase-desc {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.55;
-  font-weight: 300;
-  margin-bottom: 12px;
-}
-
-.usecase-rec {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--text);
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.rec-pill {
-  flex-shrink: 0;
-  font-family: var(--font-display);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 100px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-top: 1px;
-}
-
-.pill-budget { background: rgba(64,224,192,0.12); color: var(--accent4); }
-.pill-balanced { background: rgba(123,110,255,0.12); color: var(--accent2); }
-.pill-premium { background: rgba(245,200,66,0.12); color: var(--gold); }
-
-/* ─── ALERT BOX ─── */
+/* ── ALERT ── */
 .alert {
-  background: rgba(200,240,74,0.06);
-  border: 1px solid rgba(200,240,74,0.2);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-  font-size: 13px;
-  color: rgba(200,240,74,0.8);
-  line-height: 1.65;
-  margin-top: 20px;
+  background: var(--g-yellow-bg); border-radius: var(--r-md);
+  padding: 20px 22px; font-size: 14px; color: #5a3d00;
+  line-height: 1.65; display: flex; gap: 12px; align-items: flex-start;
+}
+.alert-ico { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+.alert strong { font-weight: 600; }
+
+/* ── USE CASE MOSAIC ── */
+.uc-mosaic {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 2px; background: var(--light-gray);
+  border-radius: var(--r-lg); overflow: hidden;
+}
+@media(max-width:640px){ .uc-mosaic{grid-template-columns:1fr} }
+
+.uc-cell { background: white; padding: 28px 26px; transition: background .2s; }
+.uc-cell:hover { background: var(--off-white); }
+
+.uc-title {
+  font-family: var(--font-h); font-size: 16px; font-weight: 700;
+  color: var(--text-dark); letter-spacing: -0.01em; margin-bottom: 6px;
+}
+.uc-desc {
+  font-size: 13px; font-weight: 300;
+  color: var(--text-mid); line-height: 1.6; margin-bottom: 13px;
+}
+.uc-rec {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-dark); line-height: 1.4;
 }
 
-.alert strong { color: var(--accent); font-weight: 500; }
+.chip {
+  flex-shrink: 0;
+  font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 100px;
+}
+.chip-g { background: var(--g-green-bg); color: var(--g-green); }
+.chip-b { background: var(--g-blue-bg); color: var(--g-blue); }
+.chip-y { background: var(--g-yellow-bg); color: #c97c00; }
 
-/* ─── FOOTER ─── */
-.footer {
-  margin-top: 72px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: gap;
-  gap: 12px;
+/* ── RULES MOSAIC ── */
+.rules-mosaic {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 2px; background: var(--light-gray);
+  border-radius: var(--r-lg); overflow: hidden;
+}
+@media(max-width:640px){ .rules-mosaic{grid-template-columns:1fr} }
+
+.rule-cell { background: white; padding: 26px 24px; display: flex; gap: 15px; transition: background .2s; }
+.rule-cell:hover { background: var(--off-white); }
+
+.rnum {
+  width: 30px; height: 30px; border-radius: 50%;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-h); font-size: 13px; font-weight: 700; margin-top: 2px;
 }
 
-.footer-left {
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
+/* Color cycling per rule */
+.rule-cell:nth-child(4n+1) .rnum { background: var(--g-blue-bg); color: var(--g-blue); }
+.rule-cell:nth-child(4n+2) .rnum { background: var(--g-red-bg);  color: var(--g-red); }
+.rule-cell:nth-child(4n+3) .rnum { background: var(--g-yellow-bg); color: #c97c00; }
+.rule-cell:nth-child(4n+0) .rnum { background: var(--g-green-bg); color: var(--g-green); }
+
+.rule-rbody {}
+.rule-rtitle {
+  font-family: var(--font-h); font-size: 15px; font-weight: 700;
+  color: var(--text-dark); letter-spacing: -0.01em; margin-bottom: 5px;
+}
+.rule-rtext {
+  font-size: 13px; font-weight: 300; color: var(--text-mid); line-height: 1.6;
 }
 
-.footer-left span { color: var(--accent); }
-
-.footer-right {
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 300;
+/* ── FOOTER ── */
+footer {
+  background: var(--off-white);
+  border-top: 1px solid var(--light-gray);
+  padding: 52px 32px 44px;
 }
+.footer-inner {
+  max-width: 1080px; margin: 0 auto;
+}
+.footer-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-h); font-size: 15px; font-weight: 700;
+  color: var(--text-dark); margin-bottom: 14px;
+}
+.footer-text { font-size: 12px; font-weight: 300; color: var(--text-light); line-height: 1.8; max-width: 680px; }
 
-/* ─── RESPONSIVE ─── */
-@media (max-width: 600px) {
-  .io-grid { grid-template-columns: 1fr; }
-  .flow-row { gap: 6px; }
-  h1 { font-size: 32px; }
-  .tabs { padding: 3px; }
-  .tab-btn { padding: 8px 12px; font-size: 12px; }
+/* ── RESPONSIVE NAV ── */
+@media(max-width:700px){
+  .nav { padding: 0 12px; }
+  .nav-link { padding: 6px 9px; font-size: 12px; }
+  .hero { padding: 60px 16px 56px; }
+  h1 { font-size: 34px; }
+  .hero-p { font-size: 16px; }
 }
 </style>
 </head>
 <body>
-<div class="page">
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-eyebrow">CFO Intelligence Brief · April 2026</div>
-    <h1>AI Models &<br><span class="highlight">Token Economics</span><br>Cheat Sheet</h1>
-    <p class="hero-sub">Everything a CFO needs to make smart AI vendor, budget, and deployment decisions — no engineering background required.</p>
-    <div class="hero-meta">
-      <span class="meta-item">5 decision frameworks</span>
-      <span class="meta-dot"></span>
-      <span class="meta-item">4 major providers</span>
-      <span class="meta-dot"></span>
-      <span class="meta-item">10 CFO rules</span>
-      <span class="meta-dot"></span>
-      <span class="meta-item">8 use case guides</span>
-    </div>
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-brand" href="#" onclick="return false;">
+    <div class="g-dots"><i></i><i></i><i></i><i></i></div>
+    AI Model Guide
+  </a>
+  <div class="nav-links">
+    <button class="nav-link on"  onclick="show('models',this)">Models</button>
+    <button class="nav-link"     onclick="show('tokens',this)">Tokens</button>
+    <button class="nav-link"     onclick="show('cost',this)">Pricing</button>
+    <button class="nav-link"     onclick="show('uc',this)">Use Cases</button>
+    <button class="nav-link"     onclick="show('rules',this)">Decision Framework</button>
   </div>
+</nav>
 
-  <!-- TABS -->
-  <div class="tabs" role="tablist">
-    <button class="tab-btn active" onclick="showTab('models', this)">Model Landscape</button>
-    <button class="tab-btn" onclick="showTab('tokens', this)">Token Basics</button>
-    <button class="tab-btn" onclick="showTab('cost', this)">Cost Comparison</button>
-    <button class="tab-btn" onclick="showTab('usecases', this)">Use Case Guide</button>
-    <button class="tab-btn" onclick="showTab('rules', this)">CFO Rules</button>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">
+    <div class="hero-tag-dot"></div>
+    CFO Intelligence Brief &nbsp;·&nbsp; April 2026
   </div>
+  <h1>AI Models &amp; <span class="cb">Token</span> <span class="cr">Economics</span><br>Made <span class="cg">Simple</span></h1>
+  <p class="hero-p">Decoding AI models. Sharpening business decisions.</p>
+  <div class="hero-stats">
+    <div class="stat-pill"><span class="stat-pill-dot" style="background:var(--g-blue)"></span>5 frameworks</div>
+    <div class="stat-pill"><span class="stat-pill-dot" style="background:var(--g-red)"></span>4 providers compared</div>
+    <div class="stat-pill"><span class="stat-pill-dot" style="background:var(--g-green)"></span>10 CFO rules</div>
+    <div class="stat-pill"><span class="stat-pill-dot" style="background:var(--g-yellow)"></span>8 decision guides</div>
+  </div>
+</div>
 
-  <!-- TAB: MODELS -->
-  <div class="tab-pane active" id="tab-models">
-    <div class="label">The four tiers</div>
-    <div class="model-grid">
-      <div class="model-card budget">
-        <span class="tier-badge">Budget</span>
-        <div class="model-name">Haiku / Flash / Grok Fast</div>
-        <div class="model-maker">Anthropic · Google · xAI</div>
-        <div class="model-price">$0.20–$1 <sup>/ 1M tokens</sup></div>
-      </div>
-      <div class="model-card balanced">
-        <span class="tier-badge">Balanced</span>
-        <div class="model-name">Sonnet / GPT-5 / Gemini Pro</div>
-        <div class="model-maker">Anthropic · OpenAI · Google</div>
-        <div class="model-price">$1.25–$5 <sup>/ 1M tokens</sup></div>
-      </div>
-      <div class="model-card premium">
-        <span class="tier-badge">Premium</span>
-        <div class="model-name">Opus / GPT-5 Pro / Gemini Ultra</div>
-        <div class="model-maker">Anthropic · OpenAI · Google</div>
-        <div class="model-price">$10–$75 <sup>/ 1M tokens</sup></div>
-      </div>
-      <div class="model-card opensource">
-        <span class="tier-badge">Open-source</span>
-        <div class="model-name">DeepSeek / Llama</div>
-        <div class="model-maker">DeepSeek · Meta</div>
-        <div class="model-price">$0.27–$0.50 <sup>/ 1M tokens</sup></div>
-      </div>
-    </div>
+<div class="wrap">
 
-    <div class="label">Provider profiles</div>
-    <div class="vendor-grid">
-      <div class="vendor-card">
-        <div class="vendor-name">OpenAI (ChatGPT / GPT)</div>
-        <div class="vendor-desc">Market leader with the widest enterprise integrations. Best for coding, document generation, and general reasoning. Premium pricing but extensive ecosystem via Azure. ChatGPT Pro is $200/seat/month.</div>
+<!-- ═══════════ MODELS ═══════════ -->
+<div class="sec on" id="sec-models">
+
+  <div class="blk">
+    <div class="blk-eyebrow">The landscape</div>
+    <div class="blk-h">Four tiers.<br>One right choice for every job.</div>
+    <div class="blk-p">AI models are grouped by cost and capability. Choosing the wrong tier is the most common way companies overspend — or under-deliver on quality.</div>
+    <div class="tier-row">
+      <div class="tc">
+        <div class="tc-bar" style="background:var(--g-green)"></div>
+        <span class="badge b-green">Budget</span>
+        <div class="tc-name">Haiku · Flash · Grok Fast</div>
+        <div class="tc-sub">Anthropic · Google · xAI</div>
+        <div class="tc-price">$0.20–$1<span class="tc-unit">per 1 million tokens</span></div>
       </div>
-      <div class="vendor-card">
-        <div class="vendor-name">Anthropic (Claude)</div>
-        <div class="vendor-desc">Safety-first design. Excellent for long document analysis, legal/compliance review, and nuanced writing. Haiku = cheap volume work. Sonnet = everyday business use. Opus = deep high-stakes analysis.</div>
+      <div class="tc dark">
+        <div class="tc-bar" style="background:rgba(255,255,255,.2)"></div>
+        <span class="badge b-dark">Balanced ✦ Most used</span>
+        <div class="tc-name">Sonnet · GPT-5 · Gemini Pro</div>
+        <div class="tc-sub">Anthropic · OpenAI · Google</div>
+        <div class="tc-price">$1.25–$5<span class="tc-unit">per 1 million tokens</span></div>
       </div>
-      <div class="vendor-card">
-        <div class="vendor-name">Google (Gemini)</div>
-        <div class="vendor-desc">Best choice if already on Google Workspace or GCP. Gemini Enterprise is $30/user/month for unlimited access. Leads some intelligence benchmarks. Strong multimodal capabilities (images + text together).</div>
+      <div class="tc">
+        <div class="tc-bar" style="background:#f0a500"></div>
+        <span class="badge b-gold">Premium</span>
+        <div class="tc-name">Opus · GPT-5 Pro · Gemini Ultra</div>
+        <div class="tc-sub">Anthropic · OpenAI · Google</div>
+        <div class="tc-price">$10–$75<span class="tc-unit">per 1 million tokens</span></div>
       </div>
-      <div class="vendor-card">
-        <div class="vendor-name">DeepSeek</div>
-        <div class="vendor-desc">Chinese startup, open-source model. Up to 97% cheaper than GPT-5 for identical tasks. Can be self-hosted to eliminate API costs entirely. Trade-off: data sovereignty risk if operated on China-based servers.</div>
+      <div class="tc">
+        <div class="tc-bar" style="background:var(--purple)"></div>
+        <span class="badge b-purple">Open-source</span>
+        <div class="tc-name">DeepSeek · Llama</div>
+        <div class="tc-sub">DeepSeek · Meta</div>
+        <div class="tc-price">$0.27–$0.50<span class="tc-unit">per 1 million tokens</span></div>
       </div>
     </div>
   </div>
 
-  <!-- TAB: TOKENS -->
-  <div class="tab-pane" id="tab-tokens">
-    <div class="label">What is a token?</div>
-    <div class="flow-row">
-      <div class="flow-box">You type a prompt</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">AI splits it into tokens</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">AI replies in tokens</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box">You pay for all tokens used</div>
-    </div>
-
-    <div class="info-box">
-      A <strong>token</strong> is roughly ¾ of a word. "Hello, how are you?" = ~6 tokens. A typical email ≈ 200 tokens. A 10-page report ≈ 5,000 tokens. <strong>1 million tokens ≈ 750,000 words</strong> — about 12 full-length novels. You pay separately for tokens you <em>send in</em> (input) and tokens the AI <em>writes back</em> (output).
-    </div>
-
-    <div class="label">Input vs Output — why this drives your bill</div>
-    <div class="io-grid">
-      <div class="io-card">
-        <div class="io-card-title">Input tokens — cheaper</div>
-        <div class="io-card-body">Everything you send to the AI: your question, documents you paste, instructions, conversation history. Typically 2–5× cheaper than output. Pasting a long contract to summarise = mostly input.</div>
+  <div class="blk">
+    <div class="blk-eyebrow">Providers</div>
+    <div class="blk-h">Who's who in the market.</div>
+    <div class="blk-p">Four serious vendors. Each has a clear strength — and a clear reason not to be your default for everything.</div>
+    <div class="vendor-mosaic">
+      <div class="vc">
+        <div class="vc-icon ico-ai">AI</div>
+        <div class="vc-name">OpenAI — ChatGPT / GPT</div>
+        <div class="vc-desc">Market leader with the widest enterprise integrations. Best for coding, document generation, and general reasoning. Premium pricing but deep Azure ecosystem means most enterprises already have a procurement path. ChatGPT Pro costs $200/seat/month.</div>
       </div>
-      <div class="io-card">
-        <div class="io-card-title">Output tokens — pricier</div>
-        <div class="io-card-body">Everything the AI writes back. If you ask for a 3-page report, those pages cost more than your question did. Shorter, more direct outputs = meaningful cost savings at scale.</div>
+      <div class="vc">
+        <div class="vc-icon ico-anth">A</div>
+        <div class="vc-name">Anthropic — Claude</div>
+        <div class="vc-desc">Safety-first design with the strongest data privacy commitments. Excellent for long document analysis, legal review, compliance work, and nuanced writing. Haiku = cheap volume. Sonnet = everyday business. Opus = high-stakes deep analysis.</div>
       </div>
-    </div>
-
-    <div class="label">Real-world cost benchmarks</div>
-    <div class="rule-list">
-      <div class="rule-item">
-        <div class="rule-num">$</div>
-        <div class="rule-text"><strong>One employee using AI daily</strong> (drafting emails, summaries, analysis) ≈ $5–20/month via API — versus $20–200/month for a subscription seat.</div>
+      <div class="vc">
+        <div class="vc-icon ico-g">
+          <svg width="20" height="20" viewBox="0 0 24 24">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+        </div>
+        <div class="vc-name">Google — Gemini</div>
+        <div class="vc-desc">Best choice if already on Google Workspace or GCP. Gemini Enterprise is $30/user/month for unlimited access. Leads several intelligence benchmarks and strong on multimodal tasks (images + text). Google Workspace discounts stack on GCP billing.</div>
       </div>
-      <div class="rule-item">
-        <div class="rule-num">$</div>
-        <div class="rule-text"><strong>Customer-facing chatbot</strong> handling 10,000 queries/day on a budget model ≈ $150–600/month. Same volume on a premium model = $3,000–8,000/month.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">$</div>
-        <div class="rule-text"><strong>Processing 1,000 contracts</strong> (5 pages each) for clause extraction ≈ $2–8 on budget vs $80–200 on premium. Match quality requirements to cost tier — don't overpay for routine extraction.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">$</div>
-        <div class="rule-text"><strong>Context window</strong> = the AI's short-term memory per session. Larger = can read more document at once, but costs more per call. Gemini and GPT handle 128K–2M tokens; Claude handles 200K.</div>
+      <div class="vc">
+        <div class="vc-icon ico-ds">DS</div>
+        <div class="vc-name">DeepSeek</div>
+        <div class="vc-desc">Chinese startup with open-source models up to 97% cheaper than GPT-5. Can be self-hosted to eliminate API costs entirely. Key trade-off: data sovereignty risk if operated on China-based servers. Only use for non-sensitive internal workloads.</div>
       </div>
     </div>
-  </div>
-
-  <!-- TAB: COST -->
-  <div class="tab-pane" id="tab-cost">
-    <div class="label">API pricing — per 1 million tokens (USD)</div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Model</th>
-            <th>Tier</th>
-            <th>Input</th>
-            <th>Output</th>
-            <th>Relative cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Grok Fast / Flash</td>
-            <td><span class="tier-badge budget" style="margin:0;font-size:9px">Budget</span></td>
-            <td>$0.20</td>
-            <td>$0.50</td>
-            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1%;background:#40E0C0"></div></div><span style="font-size:11px;color:var(--muted)">1%</span></div></td>
-          </tr>
-          <tr>
-            <td>DeepSeek V3</td>
-            <td><span class="tier-badge opensource" style="margin:0;font-size:9px">Open-source</span></td>
-            <td>$0.27</td>
-            <td>$1.10</td>
-            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:2%;background:#FF6B6B"></div></div><span style="font-size:11px;color:var(--muted)">2%</span></div></td>
-          </tr>
-          <tr>
-            <td>Claude Haiku</td>
-            <td><span class="tier-badge budget" style="margin:0;font-size:9px">Budget</span></td>
-            <td>$1.00</td>
-            <td>$5.00</td>
-            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:7%;background:#40E0C0"></div></div><span style="font-size:11px;color:var(--muted)">7%</span></div></td>
-          </tr>
-          <tr>
-            <td>Gemini 2.5 Pro</td>
-            <td><span class="tier-badge balanced" style="margin:0;font-size:9px">Balanced</span></td>
-            <td>$1.25</td>
-            <td>$10.00</td>
-            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:14%;background:#7B6EFF"></div></div><span style="font-size:11px;color:var(--muted)">14%</span></div></td>
-          </tr>
-          <tr>
-            <td>GPT-5.2 (OpenAI)</td>
-            <td><span class="tier-badge balanced" style="margin:0;font-size:9px">Balanced</span></td>
-            <td>$1.75</td>
-            <td>$14.00</td>
-            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:19%;background:#7B6EFF"></div></div><span style="font-size:11px;color:var(--muted)">19%</span></div></td>
-          </tr>
-          <tr>
-            <td>Claude Sonnet</td>
-            <td><span class="tier-badge balanced" style="margin:0;font-size:9px">Balanced</span></td>
-            <td>$3.00</td>
-            <td>$15.00</td>
-            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:20%;background:#7B6EFF"></div></div><span style="font-size:11px;color:var(--muted)">20%</span></div></td>
-          </tr>
-          <tr>
-            <td>Claude Opus</td>
-            <td><span class="tier-badge premium" style="margin:0;font-size:9px">Premium</span></td>
-            <td>$15.00</td>
-            <td>$75.00</td>
-            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:100%;background:#F5C842"></div></div><span style="font-size:11px;color:var(--muted)">100%</span></div></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="label">Subscription plans — per seat, per month</div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Plan</th><th>Provider</th><th>Price / seat</th><th>Best for</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>ChatGPT Plus</td><td>OpenAI</td><td>$20/mo</td><td>Individual power users</td></tr>
-          <tr><td>ChatGPT Pro</td><td>OpenAI</td><td>$200/mo</td><td>Heavy technical users, developers</td></tr>
-          <tr><td>Claude Pro</td><td>Anthropic</td><td>$20/mo</td><td>Docs, writing, analysis</td></tr>
-          <tr><td>Claude Team</td><td>Anthropic</td><td>$30/mo</td><td>Business teams needing collaboration</td></tr>
-          <tr><td>Gemini Enterprise</td><td>Google</td><td>$30/mo</td><td>Google Workspace users — unlimited access</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="alert">
-      <strong>Subscription vs API — the $0 vs scale decision:</strong> Flat subscriptions are easier to budget and need no engineering. APIs are cheaper at scale but require integration work. Rule of thumb: fewer than ~20 users → subscriptions. Building a product, automation, or customer-facing tool → API pricing compounds savings fast.
-    </div>
-  </div>
-
-  <!-- TAB: USE CASES -->
-  <div class="tab-pane" id="tab-usecases">
-    <div class="label">Match the job to the right model tier</div>
-    <div class="usecase-grid">
-      <div class="usecase-card">
-        <div class="usecase-title">Customer support chatbot</div>
-        <div class="usecase-desc">High volume, routine questions. Speed and cost matter more than reasoning depth.</div>
-        <div class="usecase-rec"><span class="rec-pill pill-budget">Budget</span>Haiku, Flash, or Grok Fast. Cost per query: fractions of a cent.</div>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-title">Contract & legal review</div>
-        <div class="usecase-desc">Long documents, nuanced clause extraction, risk flagging. Errors are expensive.</div>
-        <div class="usecase-rec"><span class="rec-pill pill-premium">Premium</span>Claude Opus or GPT-5. Mistakes here cost more than the API bill.</div>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-title">Internal knowledge base</div>
-        <div class="usecase-desc">Employees querying company policies, HR docs, product manuals. Medium complexity.</div>
-        <div class="usecase-rec"><span class="rec-pill pill-balanced">Balanced</span>Claude Sonnet or Gemini Pro. Good quality, manageable cost.</div>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-title">Code generation & dev tools</div>
-        <div class="usecase-desc">Developers writing or reviewing code, generating tests, debugging. Speed matters.</div>
-        <div class="usecase-rec"><span class="rec-pill pill-balanced">Balanced</span>GPT-5 or Claude Sonnet. GitHub Copilot (OpenAI-powered) = $19/user/mo.</div>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-title">Marketing content at scale</div>
-        <div class="usecase-desc">Generating product descriptions, ad copy, social posts in bulk. Volume drives cost.</div>
-        <div class="usecase-rec"><span class="rec-pill pill-budget">Budget</span>Budget tier or DeepSeek. Quality sufficient; savings compound at scale.</div>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-title">Financial & board-level analysis</div>
-        <div class="usecase-desc">Synthesising reports, earnings analysis, scenario planning. High-stakes output.</div>
-        <div class="usecase-rec"><span class="rec-pill pill-premium">Premium</span>Claude Opus or Gemini Ultra. Invest here — output drives major decisions.</div>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-title">Data extraction from documents</div>
-        <div class="usecase-desc">Pulling structured data from invoices, PDFs, forms at scale. Repetitive task.</div>
-        <div class="usecase-rec"><span class="rec-pill pill-budget">Budget</span>DeepSeek or Haiku. Repetitive structured tasks don't need premium reasoning.</div>
-      </div>
-      <div class="usecase-card">
-        <div class="usecase-title">HR & recruiting</div>
-        <div class="usecase-desc">Summarising CVs, drafting job descriptions, initial screening. Moderate complexity.</div>
-        <div class="usecase-rec"><span class="rec-pill pill-balanced">Balanced</span>Gemini Enterprise ($30/seat) bundles well if HR already uses Google Workspace.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB: CFO RULES -->
-  <div class="tab-pane" id="tab-rules">
-    <div class="label">10 rules for smarter AI spending</div>
-    <div class="rule-list">
-      <div class="rule-item">
-        <div class="rule-num">1</div>
-        <div class="rule-text"><strong>Don't default to the most expensive model.</strong> 70% of enterprise tasks work fine on a budget model. Reserve premium tiers for decisions where errors are costly and quality directly impacts outcomes.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">2</div>
-        <div class="rule-text"><strong>Output tokens cost 3–5× more than input.</strong> If a vendor proposes a solution that generates large AI responses, ask them to engineer for shorter outputs — this directly and immediately cuts your costs.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">3</div>
-        <div class="rule-text"><strong>Subscriptions vs API is a volume decision.</strong> Under ~20 users? Flat subscriptions are simpler and easier to budget. Building an automation or product for hundreds of users? API pricing scales dramatically better.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">4</div>
-        <div class="rule-text"><strong>Ask about prompt caching discounts.</strong> Anthropic's Claude charges less when the same document or context is queried repeatedly (e.g. a legal contract asked 50 questions about). This can cut costs by 50%+ on document-heavy workflows.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">5</div>
-        <div class="rule-text"><strong>On Google Workspace? Gemini Enterprise is the obvious choice.</strong> $30/user/month for unlimited access across all Google AI tools — this beats per-token billing for high-usage teams already inside the Google ecosystem.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">6</div>
-        <div class="rule-text"><strong>DeepSeek can cut costs by 95% — but check data sovereignty.</strong> If your data flows through Chinese-operated servers, that's a compliance and IP risk. Only use for non-sensitive internal workloads, or insist on a self-hosted deployment.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">7</div>
-        <div class="rule-text"><strong>Longer context windows cost more per call.</strong> Sending an entire 100-page document every time a user asks one question is expensive. Ask your tech team about "chunking" strategies that send only the relevant pages.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">8</div>
-        <div class="rule-text"><strong>Benchmark on your actual data before committing.</strong> Run 100 real tasks through 2–3 shortlisted models. Compare accuracy, speed, and cost. The top-ranked model by industry benchmarks may not win on your specific business data.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">9</div>
-        <div class="rule-text"><strong>AI prices are falling fast — avoid long lock-ins.</strong> GPT-4o pricing dropped ~75% between 2023–2025. Negotiate annual contracts, not 3-year. Ensure your architecture lets you swap providers without rebuilding everything from scratch.</div>
-      </div>
-      <div class="rule-item">
-        <div class="rule-num">10</div>
-        <div class="rule-text"><strong>Model quality ≠ model vendor.</strong> Anthropic, OpenAI, and Google run close at the top tier. Your decision should weigh: data privacy terms, existing cloud agreements (AWS/Azure/GCP discounts apply to AI too), support quality, and realistic switching costs — not just benchmark scores.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="footer-left">AI Models — <span>CFO Cheat Sheet</span></div>
-    <div class="footer-right">Prices as of April 2026 · For business decision-making use · Not financial advice</div>
   </div>
 
 </div>
 
+<!-- ═══════════ TOKENS ═══════════ -->
+<div class="sec" id="sec-tokens">
+
+  <div class="blk">
+    <div class="blk-eyebrow">The billing unit</div>
+    <div class="blk-h">What exactly<br>is a token?</div>
+    <div class="blk-p">AI models don't count words — they count tokens. Understanding this is the key to understanding every AI invoice your team will receive.</div>
+
+    <div class="flow-bar">
+      <div class="fb-step">
+        <div class="fb-icon">✏️</div>
+        <div class="fb-title">You write a prompt</div>
+        <div class="fb-sub">Your question or task</div>
+      </div>
+      <div class="fb-step">
+        <div class="fb-icon">⚙️</div>
+        <div class="fb-title">Split into tokens</div>
+        <div class="fb-sub">~¾ of a word each</div>
+      </div>
+      <div class="fb-step">
+        <div class="fb-icon">🤖</div>
+        <div class="fb-title">AI processes &amp; replies</div>
+        <div class="fb-sub">In tokens too</div>
+      </div>
+      <div class="fb-step">
+        <div class="fb-icon">💳</div>
+        <div class="fb-title">You are billed</div>
+        <div class="fb-sub">Input + output tokens</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-icon">i</div>
+      <div class="callout-body">A <strong>token ≈ ¾ of a word.</strong> "Hello, how are you?" = ~6 tokens. A typical business email = ~200 tokens. A 10-page report = ~5,000 tokens. <strong>1 million tokens ≈ 750,000 words</strong> — about 12 full-length novels. You pay separately for tokens you send in (input) and tokens the AI writes back (output).</div>
+    </div>
+
+    <div class="io-row">
+      <div class="io-card io-in">
+        <div class="io-eyebrow">Input — cheaper</div>
+        <div class="io-title">What you send in</div>
+        <div class="io-body">Your question, any documents you paste, instructions, and conversation history. Typically 2–5× cheaper than output. Pasting a long contract for analysis = mostly input cost.</div>
+      </div>
+      <div class="io-card io-out">
+        <div class="io-eyebrow">Output — pricier</div>
+        <div class="io-title">What the AI writes back</div>
+        <div class="io-body">Everything the AI generates. Ask for a 3-page summary and those pages cost significantly more than your short question did. Shorter, directed outputs = meaningful savings at scale.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="blk-eyebrow">In real money</div>
+    <div class="blk-h">What does this look like on an invoice?</div>
+    <div class="bench-list">
+      <div class="bench-row">
+        <div class="bench-emoji">👤</div>
+        <div class="bench-text"><strong>One employee using AI daily</strong> — drafting emails, summaries, analysis — costs $5–20/month via API, compared to $20–200/month for a subscription seat.</div>
+      </div>
+      <div class="bench-row">
+        <div class="bench-emoji">💬</div>
+        <div class="bench-text"><strong>Customer-facing chatbot at 10,000 queries/day:</strong> $150–600/month on a budget model. Same volume on a premium model = $3,000–8,000/month. Tier selection here is a real P&amp;L decision.</div>
+      </div>
+      <div class="bench-row">
+        <div class="bench-emoji">📄</div>
+        <div class="bench-text"><strong>Processing 1,000 contracts</strong> (5 pages each) for clause extraction: $2–8 on budget tier vs $80–200 on premium. Match quality requirements to cost — don't overpay for repetitive extraction.</div>
+      </div>
+      <div class="bench-row">
+        <div class="bench-emoji">🧠</div>
+        <div class="bench-text"><strong>Context window</strong> = the AI's short-term memory per session. Larger means it can read more document at once but costs more per call. Gemini / GPT handle up to 2M tokens; Claude handles 200K.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ COST ═══════════ -->
+<div class="sec" id="sec-cost">
+
+  <div class="blk">
+    <div class="blk-eyebrow">API pricing</div>
+    <div class="blk-h">Cost per 1 million tokens (USD)</div>
+    <div class="blk-p">Input and output are billed separately. Output costs 3–5× more. The bar below is indexed to Claude Opus output at 100%.</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th><th>Tier</th><th>Input / 1M</th><th>Output / 1M</th><th>Relative cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:500">Grok Fast / Flash</td>
+            <td><span class="chip chip-g">Budget</span></td>
+            <td style="color:var(--g-green);font-weight:500">$0.20</td>
+            <td style="color:var(--g-green);font-weight:500">$0.50</td>
+            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:1%;background:var(--g-green)"></div></div><span style="font-size:11px;color:var(--text-light)">1%</span></div></td>
+          </tr>
+          <tr>
+            <td style="font-weight:500">DeepSeek V3</td>
+            <td><span class="chip" style="background:var(--purple-bg);color:var(--purple)">Open-src</span></td>
+            <td style="color:var(--g-green);font-weight:500">$0.27</td>
+            <td style="color:var(--g-green);font-weight:500">$1.10</td>
+            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:2%;background:var(--purple)"></div></div><span style="font-size:11px;color:var(--text-light)">2%</span></div></td>
+          </tr>
+          <tr>
+            <td style="font-weight:500">Claude Haiku</td>
+            <td><span class="chip chip-g">Budget</span></td>
+            <td>$1.00</td><td>$5.00</td>
+            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:7%;background:var(--g-green)"></div></div><span style="font-size:11px;color:var(--text-light)">7%</span></div></td>
+          </tr>
+          <tr>
+            <td style="font-weight:500">Gemini 2.5 Pro</td>
+            <td><span class="chip chip-b">Balanced</span></td>
+            <td>$1.25</td><td>$10.00</td>
+            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:13%;background:var(--g-blue)"></div></div><span style="font-size:11px;color:var(--text-light)">13%</span></div></td>
+          </tr>
+          <tr>
+            <td style="font-weight:500">GPT-5.2 (OpenAI)</td>
+            <td><span class="chip chip-b">Balanced</span></td>
+            <td>$1.75</td><td>$14.00</td>
+            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:19%;background:var(--g-blue)"></div></div><span style="font-size:11px;color:var(--text-light)">19%</span></div></td>
+          </tr>
+          <tr>
+            <td style="font-weight:500">Claude Sonnet</td>
+            <td><span class="chip chip-b">Balanced</span></td>
+            <td>$3.00</td><td>$15.00</td>
+            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:20%;background:var(--g-blue)"></div></div><span style="font-size:11px;color:var(--text-light)">20%</span></div></td>
+          </tr>
+          <tr>
+            <td style="font-weight:500">Claude Opus</td>
+            <td><span class="chip chip-y">Premium</span></td>
+            <td style="color:var(--g-red)">$15.00</td>
+            <td style="color:var(--g-red)">$75.00</td>
+            <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:100%;background:var(--g-red)"></div></div><span style="font-size:11px;color:var(--text-light)">100%</span></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="blk-eyebrow">Subscription plans</div>
+    <div class="blk-h">Per seat, per month.</div>
+    <div class="blk-p">Flat subscriptions need no engineering to set up. APIs are cheaper at scale. Choose based on how many people use AI and how frequently.</div>
+    <div class="sub-row">
+      <div class="sub-card">
+        <div class="sub-plan">ChatGPT Plus</div>
+        <div class="sub-maker">OpenAI</div>
+        <div class="sub-price">$20<span>/mo</span></div>
+        <div class="sub-note">Individual power users. GPT-4o access included.</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-plan">ChatGPT Pro</div>
+        <div class="sub-maker">OpenAI</div>
+        <div class="sub-price">$200<span>/mo</span></div>
+        <div class="sub-note">Heavy technical users and developers.</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-plan">Claude Pro</div>
+        <div class="sub-maker">Anthropic</div>
+        <div class="sub-price">$20<span>/mo</span></div>
+        <div class="sub-note">Docs, writing, analysis, long context.</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-plan">Claude Team</div>
+        <div class="sub-maker">Anthropic</div>
+        <div class="sub-price">$30<span>/mo</span></div>
+        <div class="sub-note">Business teams with collaboration needs.</div>
+      </div>
+      <div class="sub-card" style="border-color:var(--g-blue)">
+        <div class="sub-plan">Gemini Enterprise</div>
+        <div class="sub-maker">Google</div>
+        <div class="sub-price">$30<span>/mo</span></div>
+        <div class="sub-note">Unlimited access. Best for Google Workspace orgs.</div>
+      </div>
+    </div>
+    <div class="alert">
+      <div class="alert-ico">💡</div>
+      <div><strong>Subscription vs API — the core question:</strong> Under ~20 users, flat subscriptions are simpler and easier to budget. Building an automation, product, or customer-facing tool for many users? API pricing scales dramatically better and the economics compound fast.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ USE CASES ═══════════ -->
+<div class="sec" id="sec-uc">
+
+  <div class="blk">
+    <div class="blk-eyebrow">Application guide</div>
+    <div class="blk-h">The right tier<br>for every business task.</div>
+    <div class="blk-p">Overspending on AI usually means using a premium model where a budget one would deliver identical results. Here's how to match tasks to tiers.</div>
+    <div class="uc-mosaic">
+      <div class="uc-cell">
+        <div class="uc-title">Customer support chatbot</div>
+        <div class="uc-desc">High volume, routine questions. Speed and cost matter more than depth of reasoning.</div>
+        <div class="uc-rec"><span class="chip chip-g">Budget</span>Haiku, Flash, or Grok Fast. Cost per query: fractions of a cent.</div>
+      </div>
+      <div class="uc-cell">
+        <div class="uc-title">Contract &amp; legal review</div>
+        <div class="uc-desc">Long documents, clause extraction, risk flagging. Errors are expensive here.</div>
+        <div class="uc-rec"><span class="chip chip-y">Premium</span>Claude Opus or GPT-5. Mistakes cost more than the API bill.</div>
+      </div>
+      <div class="uc-cell">
+        <div class="uc-title">Internal knowledge base</div>
+        <div class="uc-desc">Staff querying HR docs, policies, product manuals. Medium complexity queries.</div>
+        <div class="uc-rec"><span class="chip chip-b">Balanced</span>Claude Sonnet or Gemini Pro. Quality without premium cost.</div>
+      </div>
+      <div class="uc-cell">
+        <div class="uc-title">Code generation &amp; dev tools</div>
+        <div class="uc-desc">Developers writing, reviewing, or debugging code. Speed and accuracy both matter.</div>
+        <div class="uc-rec"><span class="chip chip-b">Balanced</span>GPT-5 or Claude Sonnet. GitHub Copilot = $19/user/month.</div>
+      </div>
+      <div class="uc-cell">
+        <div class="uc-title">Marketing content at scale</div>
+        <div class="uc-desc">Product descriptions, ad copy, social posts in bulk. Volume is what drives spend.</div>
+        <div class="uc-rec"><span class="chip chip-g">Budget</span>Budget tier or DeepSeek. Quality sufficient; savings compound at scale.</div>
+      </div>
+      <div class="uc-cell">
+        <div class="uc-title">Board &amp; financial analysis</div>
+        <div class="uc-desc">Synthesising reports, earnings analysis, scenario modelling. High-stakes output.</div>
+        <div class="uc-rec"><span class="chip chip-y">Premium</span>Claude Opus or Gemini Ultra. Invest here — output drives major decisions.</div>
+      </div>
+      <div class="uc-cell">
+        <div class="uc-title">Document data extraction</div>
+        <div class="uc-desc">Pulling structured data from invoices, PDFs, forms at volume. Repetitive task.</div>
+        <div class="uc-rec"><span class="chip chip-g">Budget</span>DeepSeek or Haiku. Structured repetitive tasks need no premium reasoning.</div>
+      </div>
+      <div class="uc-cell">
+        <div class="uc-title">HR &amp; recruiting</div>
+        <div class="uc-desc">Summarising CVs, drafting JDs, initial screening questions. Moderate complexity.</div>
+        <div class="uc-rec"><span class="chip chip-b">Balanced</span>Gemini Enterprise at $30/seat if HR already uses Google Workspace.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════ RULES ═══════════ -->
+<div class="sec" id="sec-rules">
+
+  <div class="blk">
+    <div class="blk-eyebrow">Decision framework</div>
+    <div class="blk-h">10 decisions that<br>sharpen AI spending.</div>
+    <div class="blk-p">Distilled from the most common expensive mistakes enterprises make when deploying AI. Apply these before signing any AI vendor contract.</div>
+    <div class="rules-mosaic">
+      <div class="rule-cell">
+        <div class="rnum">1</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">Don't default to the most expensive model</div>
+          <div class="rule-rtext">70% of enterprise tasks work fine on a budget model. Reserve premium tiers for decisions where errors are costly and quality directly impacts outcomes.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">2</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">Output tokens cost 3–5× more than input</div>
+          <div class="rule-rtext">Ask vendors to engineer for shorter AI responses. This is a direct lever that immediately reduces monthly costs without changing output quality.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">3</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">Subscriptions vs API is a volume decision</div>
+          <div class="rule-rtext">Under ~20 users, flat subscriptions are simpler. Building an automation or product for many users? API pricing scales dramatically better.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">4</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">Ask about prompt caching discounts</div>
+          <div class="rule-rtext">Anthropic's Claude charges less when the same document context is queried repeatedly. For document-heavy workflows this can cut costs by over 50%.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">5</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">On Google Workspace? Gemini Enterprise is obvious</div>
+          <div class="rule-rtext">$30/user/month for unlimited AI access. For high-usage teams already in the Google ecosystem this beats per-token billing significantly.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">6</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">DeepSeek saves 95% — but check sovereignty</div>
+          <div class="rule-rtext">If data flows through China-based servers that's a compliance and IP risk. Only use for non-sensitive workloads, or insist on a self-hosted deployment.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">7</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">Longer context windows cost more per call</div>
+          <div class="rule-rtext">Sending a 100-page document every time someone asks one question is expensive. Ask your team about "chunking" strategies that send only the relevant pages.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">8</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">Benchmark on your actual data before committing</div>
+          <div class="rule-rtext">Run 100 real business tasks through 2–3 shortlisted models. The top industry benchmark winner may not win on your specific business workflows.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">9</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">AI prices are falling — avoid long lock-ins</div>
+          <div class="rule-rtext">GPT-4o pricing dropped ~75% from 2023–2025. Negotiate annual, not 3-year contracts. Build so you can swap providers without a full rebuild.</div>
+        </div>
+      </div>
+      <div class="rule-cell">
+        <div class="rnum">10</div>
+        <div class="rule-rbody">
+          <div class="rule-rtitle">Model quality ≠ model vendor</div>
+          <div class="rule-rtext">Top models from Anthropic, OpenAI, and Google are highly competitive. Decide on: data privacy terms, existing cloud discounts, support quality, and switching costs.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="g-dots" style="display:flex;gap:4px">
+        <i style="width:9px;height:9px;border-radius:50%;background:var(--g-blue);display:block"></i>
+        <i style="width:9px;height:9px;border-radius:50%;background:var(--g-red);display:block"></i>
+        <i style="width:9px;height:9px;border-radius:50%;background:var(--g-yellow);display:block"></i>
+        <i style="width:9px;height:9px;border-radius:50%;background:var(--g-green);display:block"></i>
+      </div>
+      AI Models — CFO Decision Cheat Sheet
+    </div>
+    <div class="footer-text">
+      Pricing data as of April 2026. All figures in USD. For business decision-making reference only — not financial or legal advice.<br>
+      Sources: Anthropic, OpenAI, Google, xAI official pricing documentation · IntuitionLabs AI Pricing Report, Feb 2026.
+    </div>
+  </div>
+</footer>
+
 <script>
-function showTab(id, btn) {
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  btn.classList.add('active');
+function show(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('on'));
+  document.getElementById('sec-' + id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </body>
